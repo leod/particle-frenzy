@@ -16,23 +16,10 @@ impl event::EventHandler for MainState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
         let time = timer::duration_to_f64(timer::get_time_since_start(ctx)) as f32;
 
-        let particle = frenzy::Particle {
-            spawn_time: time,
-            life_time: 2.0,
-            pos: [0.0, 0.0],
-            vel: [1.0, 0.0],
-            angle: 0.0,
-            angular_vel: 1.0,
-            color: [1.0, 0.0, 0.0],
-            size: [10.0, 10.0],
-        };
-
-        for _ in 0..10 {
-            self.system.spawn(&particle);
-        }
+        graphics::clear(ctx);
 
         {
-            let transform = graphics::get_transform(ctx).clone();
+            let transform = graphics::get_projection(ctx) * graphics::get_transform(ctx);
             let (factory, device, encoder, _depthview, _colorview) = graphics::get_gfx_objects(ctx);
             self.system
                 .render(factory, encoder, time, &transform.into());
@@ -42,6 +29,33 @@ impl event::EventHandler for MainState {
         graphics::present(ctx);
 
         Ok(())
+    }
+
+    fn mouse_motion_event(
+        &mut self,
+        ctx: &mut Context,
+        _state: event::MouseState,
+        x: i32,
+        y: i32,
+        _xrel: i32,
+        _yrel: i32,
+    ) {
+        let time = timer::duration_to_f64(timer::get_time_since_start(ctx)) as f32;
+
+        let particle = frenzy::Particle {
+            spawn_time: time,
+            life_time: 2.0,
+            pos: [x as f32, y as f32],
+            vel: [1.0, 0.0],
+            angle: 0.0,
+            angular_vel: 1.0,
+            color: [1.0, 0.0, 0.0],
+            size: [20.0, 20.0],
+        };
+
+        for _ in 0..10 {
+            self.system.spawn(&particle);
+        }
     }
 }
 
