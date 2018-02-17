@@ -17,7 +17,6 @@ out VertexData {
     vec2 uv;
 } VertexOut;
 
-layout (std140)
 uniform Globals {
     mat4 u_Transform;
     float u_Time;
@@ -26,7 +25,7 @@ uniform Globals {
 void main() {
     vec2 size = VertexIn[0].size;
 
-    //if (VertexIn[0].spawn_time + VertexIn[0].life_time < u_Time) {
+    if (VertexIn[0].spawn_time + VertexIn[0].life_time > u_Time) {
         gl_Position = u_Transform * (gl_in[0].gl_Position + vec4(-size.x, -size.y, 0, 0));
         VertexOut.color = VertexIn[0].color;
         VertexOut.uv = vec2(-1, -1);
@@ -46,7 +45,7 @@ void main() {
         VertexOut.color = VertexIn[0].color;
         VertexOut.uv = vec2(1, 1);
         EmitVertex();
-    //}
+    }
 }";
 
 pub const VERTEX: &[u8] = br"
