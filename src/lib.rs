@@ -19,23 +19,24 @@ gfx_defines! {
     // A `Vertex` stores the lifetime and the initial state of one particle.
     vertex Particle {
         spawn_time: f32 = "a_SpawnTime",
-        lifetime: f32 = "a_DeathTime",
+        life_time: f32 = "a_LifeTime",
 
         pos: [f32; 2] = "a_Pos",
         vel: [f32; 2] = "a_Vel",
         angle: f32 = "a_Angle",
         angular_vel: f32 = "a_AngularVel",
         color: [f32; 3] = "a_Color",
-        size: f32 = "a_Size",
+        size: [f32; 2] = "a_Size",
     }
 
     constant Globals {
+        transform: [[f32; 4]; 4] = "u_Transform",
         time: f32 = "u_Time",
     }
 
     pipeline pipe {
         vbuf: gfx::VertexBuffer<Particle> = (),
-        globals: gfx::ConstantBuffer<Globals> = "Locals",
+        globals: gfx::ConstantBuffer<Globals> = "Globals",
         out_color: gfx::BlendTarget<ColorFormat> = (
             "Target0",
             gfx::state::ColorMask::all(),
@@ -85,9 +86,11 @@ impl<R: gfx::Resources> ParticleSystem<R> {
             "ParticleSystem must be initialized with at least one buffer"
         );
 
-        let vs = factory.create_shader_vertex(shaders::VERTEX).unwrap();
-        let gs = factory.create_shader_geometry(shaders::GEOMETRY).unwrap();
-        let ps = factory.create_shader_pixel(shaders::PIXEL).unwrap();
+        let vs = factory.create_shader_vertex(shaders::VERTEX).expect("vs");
+        let gs = factory
+            .create_shader_geometry(shaders::GEOMETRY)
+            .expect("gs");
+        let ps = factory.create_shader_pixel(shaders::PIXEL).expect("ps");
         let shader_set = gfx::ShaderSet::Geometry(vs, gs, ps);
 
         let pso = factory
@@ -127,6 +130,7 @@ impl<R: gfx::Resources> ParticleSystem<R> {
         _factory: &mut F,
         encoder: &mut gfx::Encoder<R, C>,
         cur_time: f32,
+        transform: &[[f32; 4]; 4],
     ) {
         // Create new particles, filling up the ring buffer
         let mut i = 0;
@@ -153,7 +157,7 @@ impl<R: gfx::Resources> ParticleSystem<R> {
             // rendering
             self.buffers[self.next_index.0].max_death_time = copy_slice
                 .iter()
-                .map(|particle| particle.spawn_time + particle.lifetime)
+                .map(|particle| particle.spawn_time + particle.life_time)
                 .fold(0.0, f32::max);
 
             self.next_index = if num_copy == buffer_space {
@@ -172,8 +176,15 @@ impl<R: gfx::Resources> ParticleSystem<R> {
 
             i += num_copy;
         }
+        self.new_particles.clear();
 
         // Draw all the active buffers
+        let globals = Globals {
+            time: cur_time,
+            transform: *transform,
+        };
+        encoder.update_constant_buffer(&self.globals, &globals);
+
         for buffer in &self.buffers {
             if buffer.max_death_time > cur_time {
                 encoder.draw(&buffer.slice, &self.pso, &buffer.data);
