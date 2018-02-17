@@ -6,7 +6,7 @@ Parts of the code, especially the shaders, are based on gfx's [particle example]
 ## Example
 See [examples/ggez.rs](examples/ggez.rs) for an example of using this crate in combination with `ggez`:
 ```text
-cargo run -j4 --example ggez
+cargo run -j4 --release --example ggez
 ```
 In this example, 2000 particles are spawned whenever the mouse is moved.
 

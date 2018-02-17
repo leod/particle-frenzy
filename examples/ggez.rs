@@ -71,7 +71,7 @@ impl event::EventHandler for MainState {
 
 pub fn main() {
     let conf = conf::Conf::new();
-    let ctx = &mut Context::load_from_conf("ggez", "frenzy", conf).unwrap();
+    let ctx = &mut Context::load_from_conf("particle-frenzy", "leod", conf).unwrap();
 
     let system = {
         let target = graphics::get_screen_render_target(ctx);
