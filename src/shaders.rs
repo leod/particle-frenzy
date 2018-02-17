@@ -1,4 +1,4 @@
-// Large amounts of the following shaders are copied from the following awesome ggez example:
+// Large amounts of the following shaders are copied from the following awesome gfx example:
 //     https://github.com/gfx-rs/gfx/blob/master/examples/support/particle/shader/
 
 pub const GEOMETRY: &[u8] = br"#version 150 core
