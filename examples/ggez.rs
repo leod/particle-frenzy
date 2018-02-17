@@ -1,6 +1,6 @@
-extern crate frenzy;
 extern crate gfx_device_gl;
 extern crate ggez;
+extern crate particle_frenzy;
 extern crate rand;
 
 use std::f32;
@@ -9,7 +9,7 @@ use rand::Rng;
 use ggez::{conf, event, graphics, timer, Context, GameResult};
 
 struct MainState {
-    system: frenzy::ParticleSystem<gfx_device_gl::Resources>,
+    system: particle_frenzy::System<gfx_device_gl::Resources>,
 }
 
 impl event::EventHandler for MainState {
@@ -53,7 +53,7 @@ impl event::EventHandler for MainState {
             let speed = rand::thread_rng().gen_range(min_speed, max_speed);
             let vel = [angle.cos() * speed, angle.sin() * speed];
 
-            let particle = frenzy::Particle {
+            let particle = particle_frenzy::Particle {
                 spawn_time: time,
                 life_time: 2.0,
                 pos: [x as f32, y as f32],
@@ -76,7 +76,7 @@ pub fn main() {
     let system = {
         let target = graphics::get_screen_render_target(ctx);
         let factory = graphics::get_factory(ctx);
-        frenzy::ParticleSystem::new(factory, target, 100_000, 50)
+        particle_frenzy::System::new(factory, target, 100_000, 50)
     };
 
     let state = &mut MainState { system };

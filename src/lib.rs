@@ -56,7 +56,7 @@ struct Buffer<R: gfx::Resources> {
 }
 
 /// Manages multiple buffers to store particles and allows for rendering them.
-pub struct ParticleSystem<R: gfx::Resources> {
+pub struct System<R: gfx::Resources> {
     buffer_size: usize,
 
     target: gfx::handle::RenderTargetView<R, ColorFormat>,
@@ -73,7 +73,7 @@ pub struct ParticleSystem<R: gfx::Resources> {
     next_index: (usize, usize),
 }
 
-impl<R: gfx::Resources> ParticleSystem<R> {
+impl<R: gfx::Resources> System<R> {
     /// Create a new particle system, pre-allocating the specified number of buffers.
     pub fn new<F: gfx::Factory<R>>(
         factory: &mut F,
@@ -83,7 +83,7 @@ impl<R: gfx::Resources> ParticleSystem<R> {
     ) -> Self {
         assert!(
             num_initial_buffers > 0,
-            "ParticleSystem must be initialized with at least one buffer"
+            "System must be initialized with at least one buffer"
         );
 
         let vs = factory.create_shader_vertex(shaders::VERTEX).expect("vs");
@@ -103,7 +103,7 @@ impl<R: gfx::Resources> ParticleSystem<R> {
             .unwrap();
         let globals = factory.create_constant_buffer(1);
 
-        let mut system = ParticleSystem {
+        let mut system = System {
             target,
             pso,
             globals,

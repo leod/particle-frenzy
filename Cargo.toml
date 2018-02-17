@@ -1,5 +1,5 @@
 [package]
-name = "frenzy"
+name = "particle-frenzy"
 description = "Simple 2D particle system"
 version = "0.0.1"
 repository = "https://github.com/leod/frenzy"
