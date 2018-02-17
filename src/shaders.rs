@@ -23,9 +23,9 @@ uniform Globals {
 };
 
 void main() {
-    vec2 size = VertexIn[0].size;
+    if (u_Time - VertexIn[0].spawn_time < VertexIn[0].life_time) {
+        vec2 size = VertexIn[0].size;
 
-    if (VertexIn[0].spawn_time + VertexIn[0].life_time > u_Time) {
         gl_Position = u_Transform * (gl_in[0].gl_Position + vec4(-size.x, -size.y, 0, 0));
         VertexOut.color = VertexIn[0].color;
         VertexOut.uv = vec2(-1, -1);
@@ -67,9 +67,17 @@ out VertexData {
     vec2 size;
 } VertexOut;
 
+uniform Globals {
+    mat4 u_Transform;
+    float u_Time;
+};
+
 void main() {
-    gl_Position = vec4(a_Pos, 0, 1);
-    VertexOut.color = vec4(a_Color, 1);
+    float percent = (u_Time - a_SpawnTime) / a_LifeTime;
+
+    gl_Position = vec4(a_Pos + a_Vel * percent, 0, 1);
+
+    VertexOut.color = vec4(a_Color, 1.0 - percent);
     VertexOut.spawn_time = a_SpawnTime;
     VertexOut.life_time = a_LifeTime;
     VertexOut.size = a_Size;

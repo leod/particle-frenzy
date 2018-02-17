@@ -44,7 +44,7 @@ impl event::EventHandler for MainState {
 
         let particle = frenzy::Particle {
             spawn_time: time,
-            life_time: 20.0,
+            life_time: 2.0,
             pos: [x as f32, y as f32],
             vel: [1.0, 0.0],
             angle: 0.0,
