@@ -1,0 +1,16 @@
+[package]
+name = "frenzy"
+description = "Simple 2D particle system"
+version = "0.0.1"
+repository = "https://github.com/leod/frenzy"
+authors = [
+   "leod <subtle.frustration@proton.me>",
+]
+license = "MIT"
+
+[dependencies]
+gfx = "0.17"
+
+[dev-dependencies]
+ggez = { git = "https://github.com/ggez/ggez.git", branch = "devel" }
+gfx_device_gl = "0.15"
