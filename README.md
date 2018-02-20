@@ -3,6 +3,9 @@ A simple 2D particle system in Rust using [gfx](https://github.com/gfx-rs/gfx). 
 
 Parts of the code, especially the shaders, are based on gfx's [particle example](https://github.com/gfx-rs/gfx/tree/v0.17/examples/particle).
 
+## Status
+Consider this a proof of concept. Currently, only circular particles are possible.
+
 ## Example
 See [examples/ggez.rs](examples/ggez.rs) for an example of using this crate in combination with `ggez`:
 ```text
