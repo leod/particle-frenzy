@@ -23,7 +23,7 @@ uniform Globals {
 };
 
 void main() {
-    if (u_Time - VertexIn[0].spawn_time < VertexIn[0].life_time) {
+    if (u_Time - VertexIn[0].spawn_time <= VertexIn[0].life_time) {
         vec2 size = VertexIn[0].size;
 
         gl_Position = u_Transform * (gl_in[0].gl_Position + vec4(-size.x, -size.y, 0, 0));
@@ -53,11 +53,16 @@ pub const VERTEX: &[u8] = br"
 
 in float a_SpawnTime;
 in float a_LifeTime;
+
 in vec2 a_Pos;
 in vec2 a_Vel;
 in float a_Angle;
 in float a_AngularVel;
+in float a_Friction;
+
 in vec3 a_Color;
+in float a_AlphaExp;
+
 in vec2 a_Size;
 
 out VertexData {
@@ -73,11 +78,18 @@ uniform Globals {
 };
 
 void main() {
-    float percent = (u_Time - a_SpawnTime) / a_LifeTime;
+    // TODO: Not sure if it is besser to calculate derived particle properties
+    //       in vertex or geometry shader.
 
-    gl_Position = vec4(a_Pos + a_Vel * percent, 0, 1);
+    float delta = u_Time - a_SpawnTime;
+    float percent = delta / a_LifeTime;
 
-    VertexOut.color = vec4(a_Color, 1.0 - percent);
+    vec2 pos = a_Pos 
+        + a_Vel * delta
+        - 0.5 * a_Friction * delta * delta * normalize(a_Vel);
+    gl_Position = vec4(pos, 0, 1);
+
+    VertexOut.color = vec4(a_Color, 1.0 - pow(percent, a_AlphaExp));
     VertexOut.spawn_time = a_SpawnTime;
     VertexOut.life_time = a_LifeTime;
     VertexOut.size = a_Size;
@@ -94,6 +106,6 @@ in VertexData {
 out vec4 Target0;
 
 void main() {
-    float alpha = max(1-dot(VertexIn.uv, VertexIn.uv), 0);
-    Target0 = vec4(VertexIn.color.xyz, VertexIn.color.w*alpha);
+    float alpha = max(1 - dot(VertexIn.uv, VertexIn.uv), 0);
+    Target0 = vec4(VertexIn.color.xyz, VertexIn.color.w * alpha);
 }";

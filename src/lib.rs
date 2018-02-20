@@ -25,7 +25,11 @@ gfx_defines! {
         vel: [f32; 2] = "a_Vel",
         angle: f32 = "a_Angle",
         angular_vel: f32 = "a_AngularVel",
+        friction: f32 = "a_Friction",
+
         color: [f32; 3] = "a_Color",
+        alpha_exp: f32 = "a_AlphaExp",
+
         size: [f32; 2] = "a_Size",
     }
 
