@@ -1,7 +1,9 @@
 #[macro_use]
 extern crate gfx;
+extern crate rand;
 
 mod shaders;
+pub mod spawn;
 
 use gfx::traits::FactoryExt;
 
@@ -17,6 +19,7 @@ type ColorFormat = gfx::format::Srgba8;
 
 gfx_defines! {
     // A `Vertex` stores the lifetime and the initial state of one particle.
+    // TODO: It might be faster to use one VBO per property.
     vertex Particle {
         spawn_time: f32 = "a_SpawnTime",
         life_time: f32 = "a_LifeTime",
@@ -129,6 +132,7 @@ impl<R: gfx::Resources> System<R> {
         self.new_particles.push(particle.clone());
     }
 
+    /// Transfer new particles to the GPU and draw the active buffers.
     pub fn render<C: gfx::CommandBuffer<R>, F: gfx::Factory<R>>(
         &mut self,
         _factory: &mut F,

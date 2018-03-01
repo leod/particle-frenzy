@@ -56,10 +56,10 @@ impl event::EventHandler for MainState {
             let speed = fact * rel_speed;
             let vel = [angle.cos() * speed, angle.sin() * speed];
             let friction = 1000.0;
-            let life_time = speed / friction * 2.3;
+            let life_time = speed / friction;
 
             let hsl = hsl::HSL {
-                h: ((1.0 - (fact - min_speed) / (max_speed - min_speed)) * 180.0 + 100.0) as f64,
+                h: ((1.0 - (fact - min_speed) / (max_speed - min_speed)) * 360.0) as f64,
                 s: 0.9,
                 l: 0.4,
             };
