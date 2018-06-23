@@ -66,7 +66,7 @@ struct Buffer<R: gfx::Resources> {
 pub struct System<R: gfx::Resources> {
     buffer_size: usize,
 
-    target: gfx::handle::RenderTargetView<R, ColorFormat>,
+    target: gfx::handle::RawRenderTargetView<R>,
     pso: gfx::PipelineState<R, pipe::Meta>,
     globals: gfx::handle::Buffer<R, Globals>,
 
@@ -84,7 +84,7 @@ impl<R: gfx::Resources> System<R> {
     /// Create a new particle system, pre-allocating the specified number of buffers.
     pub fn new<F: gfx::Factory<R>>(
         factory: &mut F,
-        target: gfx::handle::RenderTargetView<R, ColorFormat>,
+        target: gfx::handle::RawRenderTargetView<R>,
         buffer_size: usize,
         num_initial_buffers: usize,
     ) -> Self {
@@ -212,7 +212,7 @@ impl<R: gfx::Resources> System<R> {
         let data = pipe::Data {
             vbuf,
             globals: self.globals.clone(),
-            out_color: self.target.clone(),
+            out_color: gfx::memory::Typed::new(self.target.clone()),
         };
         let slice = gfx::Slice::new_match_vertex_buffer(&data.vbuf);
 

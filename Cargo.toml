@@ -13,6 +13,6 @@ gfx = "0.17"
 rand = "0.4"
 
 [dev-dependencies]
-ggez = { git = "https://github.com/ggez/ggez.git", branch = "devel" }
+ggez = "0.4"
 gfx_device_gl = "0.15"
 hsl = "0.1.1"
